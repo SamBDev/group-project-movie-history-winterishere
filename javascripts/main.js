@@ -33,7 +33,8 @@ $(document).on("click", ".card-link", function() {
 	let movieId = $(this).data("add-watch");
 	$(`#${movieId}-add-watchlist`).addClass("hideIt");
 	$(`#${movieId}-stars-container`).removeClass("hideIt");
-	controller.addToWatchList(movieId);
+	let title = $(`#${movieId}-title`).text();
+	controller.addToWatchList(movieId, title);
 });
 
 $(document).on("click", ".star", function() {
@@ -50,5 +51,6 @@ $(document).keypress(function(e) {
   if(key == 13) {
     let searchValue = $("#search-bar").val();
       db.getMovies(searchValue);
+      db.printUserMovies();
   }
  });

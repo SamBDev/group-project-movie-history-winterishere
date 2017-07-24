@@ -6,12 +6,13 @@ let firebase = require('./fbConfig');
 
 //called on click of "Add to Watchlist" from main.js, we now send firebase an object with the movie information we need not contained in the api - MB
 
-module.exports.addToWatchList = (movieId) => {
+module.exports.addToWatchList = (movieId, title) => {
   let currentUser = firebase.auth().currentUser.uid;
   console.log("movieId", movieId);
   console.log("printmymessage", currentUser);
     let newMovieObj = {
       id: movieId,
+      title: title,
       user: currentUser,
       watched: false
     };

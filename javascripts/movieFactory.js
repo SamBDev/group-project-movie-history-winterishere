@@ -5,6 +5,7 @@ let dbGet = require("./dbGetter")();
 let $container = $('.container');
 let templates = require('./templateBuilder');
 let fbURL = "https://moviewatcher-movie-history.firebaseio.com";
+let firebase = require('./fbConfig');
 
 // empty arr that we are pushing movieData results into
 let movieArr = [];
@@ -103,4 +104,39 @@ module.exports.addMovie = (newMovieObj) => {
       resolve(movieId);
     });
   });
+};
+
+module.exports.getUserMovies = () => {
+  return new Promise( ( resolve, reject) => {
+    let currentUser = firebase.auth().currentUser.uid;
+    $.ajax({
+      url: `${fbURL}/movies.json?orderBy="user"&equalTo="${currentUser}"`
+    }).done( (movieData) => {
+      resolve(movieData);
+      console.log("movieData", movieData);
+    });
+  });
+};
+
+module.exports.printUserMovies = () => {
+  module.exports.getUserMovies()
+      .then((firebaseMovies) => {
+            let matchedMovies = [];
+            console.log("firebase movies", firebaseMovies);
+            console.log("search value today", $("#search-bar").val());
+            $.each(firebaseMovies, (index, movie) => {
+              console.log("movie title today", movie.title);
+              if(movie.title.toLowerCase().includes($("#search-bar").val().toLowerCase())) {
+                matchedMovies.push(movie);
+                 }
+               // console.log("matched movies", matchedMovies);
+
+  });
+            $.each(matchedMovies, (index, movie) => {
+              console.log("matched movies", matchedMovies);
+               let completedCard = templates.buildMovieCard(matchedMovies[index]);
+    // printing into the dom appended to the cards from handlebars
+              $container.append(completedCard);
+            });
+});
 };
