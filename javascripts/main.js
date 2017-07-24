@@ -4,6 +4,8 @@ let $ = require("jquery");
 let controller = require("./controller");
 let userFactory = require("./userFactory");
 let db = require('./movieFactory');
+let $container = $('.container');
+let templates = require('./templateBuilder');
 
 
 //When the user clicks the log in link, this calls the function to log them in with firebase
@@ -49,8 +51,25 @@ $(document).on("click", ".star", function() {
 $(document).keypress(function(e) {
   var key = e.which;
   if(key == 13) {
+  	$container.html("");
     let searchValue = $("#search-bar").val();
       db.getMovies(searchValue);
       db.printUserMovies();
   }
  });
+
+$("#unwatched").click(function() {
+	$container.html("");
+ 	db.printUserMovies()
+  	.then((movieData) => {
+    	console.log("movieData", movieData);
+    	console.log("object key?", Object.keys(movieData));
+    	$.each(movieData, (index, movie) => {
+      	if(movie.watched === false) {
+      		console.log("movie", movie.cast);
+        	let completedCard = templates.buildMovieCard(movie[index]);
+       	 	$container.append(completedCard);
+      	}
+    });
+  });
+});
